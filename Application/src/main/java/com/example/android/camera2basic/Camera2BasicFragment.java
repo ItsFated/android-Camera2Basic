@@ -483,7 +483,15 @@ public class Camera2BasicFragment extends Fragment
 
     /**
      * Sets up member variables related to camera.
-     *
+     * <ol>
+     * <li>遍历CameraIdList</li>
+     * <li>过滤掉前置摄像头</li>
+     * <li>获取配置列表</li>
+     * <li>获取到最大图片输出尺寸，同事配置ImageReader用于保存图片</li>
+     * <li>检测是否需要将相机传感器尺寸和显示尺寸进行宽高互换</li>
+     * <li>找到最佳的适配屏幕的相机预览尺寸</li>
+     * <li>判断是否支持闪光灯</li>
+     * </ol>
      * @param width  The width of available size for camera preview
      * @param height The height of available size for camera preview
      */
@@ -733,7 +741,7 @@ public class Camera2BasicFragment extends Fragment
      * Configures the necessary {@link android.graphics.Matrix} transformation to `mTextureView`.
      * This method should be called after the camera preview size is determined in
      * setUpCameraOutputs and also the size of `mTextureView` is fixed.
-     *
+     * 缩放、旋转视图为最适合的视图
      * @param viewWidth  The width of `mTextureView`
      * @param viewHeight The height of `mTextureView`
      */
