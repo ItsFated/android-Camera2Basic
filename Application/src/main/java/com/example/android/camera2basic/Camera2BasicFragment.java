@@ -50,6 +50,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.util.Range;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
@@ -293,6 +294,7 @@ public class Camera2BasicFragment extends Fragment
                     break;
                 }
                 case STATE_WAITING_LOCK: {
+                    android.util.Log.d("qyp", "Camera2BasicFragment.process() STATE_WAITING_LOCK called with: result = [" + result + "]");
                     Integer afState = result.get(CaptureResult.CONTROL_AF_STATE);
                     if (afState == null) {
                         captureStillPicture();
@@ -311,6 +313,7 @@ public class Camera2BasicFragment extends Fragment
                     break;
                 }
                 case STATE_WAITING_PRECAPTURE: {
+                    android.util.Log.d("qyp", "Camera2BasicFragment.process() STATE_WAITING_PRECAPTURE called with: result = [" + result + "]");
                     // CONTROL_AE_STATE can be null on some devices
                     Integer aeState = result.get(CaptureResult.CONTROL_AE_STATE);
                     if (aeState == null ||
@@ -321,6 +324,7 @@ public class Camera2BasicFragment extends Fragment
                     break;
                 }
                 case STATE_WAITING_NON_PRECAPTURE: {
+                    android.util.Log.d("qyp", "Camera2BasicFragment.process() STATE_WAITING_NON_PRECAPTURE called with: result = [" + result + "]");
                     // CONTROL_AE_STATE can be null on some devices
                     Integer aeState = result.get(CaptureResult.CONTROL_AE_STATE);
                     if (aeState == null || aeState != CaptureResult.CONTROL_AE_STATE_PRECAPTURE) {
@@ -344,6 +348,14 @@ public class Camera2BasicFragment extends Fragment
                                        @NonNull CaptureRequest request,
                                        @NonNull TotalCaptureResult result) {
             process(result);
+        }
+
+        /**
+         *
+         * @param result
+         */
+        private void printFps(CaptureResult result) {
+
         }
 
     };
@@ -383,7 +395,7 @@ public class Camera2BasicFragment extends Fragment
      */
     private static Size chooseOptimalSize(Size[] choices, int textureViewWidth,
             int textureViewHeight, int maxWidth, int maxHeight, Size aspectRatio) {
-
+        android.util.Log.d("qyp", "Camera2BasicFragment.chooseOptimalSize() called with: choices = [" + choices + "], textureViewWidth = [" + textureViewWidth + "], textureViewHeight = [" + textureViewHeight + "], maxWidth = [" + maxWidth + "], maxHeight = [" + maxHeight + "], aspectRatio = [" + aspectRatio + "]");
         // Collect the supported resolutions that are at least as big as the preview Surface
         List<Size> bigEnough = new ArrayList<>();
         // Collect the supported resolutions that are smaller than the preview Surface
@@ -509,6 +521,8 @@ public class Camera2BasicFragment extends Fragment
                 if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
                     continue;
                 }
+                Range<Integer>[] fpsRanges = characteristics.get(CameraCharacteristics.CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES);
+                android.util.Log.d("qyp", "Camera2BasicFragment.setUpCameraOutputs() called with: fpsRanges = [" + Arrays.toString(fpsRanges) + "]");
 
                 StreamConfigurationMap map = characteristics.get(
                         CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
@@ -697,6 +711,8 @@ public class Camera2BasicFragment extends Fragment
             mPreviewRequestBuilder.addTarget(surface);
 
             // Here, we create a CameraCaptureSession for camera preview.
+            // 为什么要创建两个Surface，其中一个是预览用，一个是拍照用，预览或拍照时其中有一个是无效的？
+            // 答：这个是用于适配到这个捕获器的Surface，类似于配置Surface，以备使用
             mCameraDevice.createCaptureSession(Arrays.asList(surface, mImageReader.getSurface()),
                     new CameraCaptureSession.StateCallback() {
 
@@ -718,6 +734,7 @@ public class Camera2BasicFragment extends Fragment
 
                                 // Finally, we start displaying the camera preview.
                                 mPreviewRequest = mPreviewRequestBuilder.build();
+                                android.util.Log.d("qyp", "Camera2BasicFragment.onConfigured() called with: cameraCaptureSession = [" + cameraCaptureSession + "]");
                                 mCaptureSession.setRepeatingRequest(mPreviewRequest,
                                         mCaptureCallback, mBackgroundHandler);
                             } catch (CameraAccessException e) {
