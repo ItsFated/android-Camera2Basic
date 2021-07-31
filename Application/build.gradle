@@ -1,8 +1,11 @@
 
 buildscript {
     repositories {
-        jcenter()
-        google()
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        mavenLocal()
+        mavenCentral()
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
     }
 
     dependencies {
@@ -13,8 +16,11 @@ buildscript {
 apply plugin: 'com.android.application'
 
 repositories {
-    jcenter()
-    google()
+    maven { url 'https://maven.aliyun.com/repository/public' }
+    mavenLocal()
+    mavenCentral()
+    maven { url 'https://maven.aliyun.com/repository/google' }
+    maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
 }
 
 dependencies {
